@@ -27,17 +27,40 @@ int getColorValue(char *color)
     return -1;
 };
 
+float getTolerance(char *color)
+{
+
+    // Check for valid input
+    if (strcmp(color, "brown") == 0)
+        return 1;
+    if (strcmp(color, "red") == 0)
+        return 2;
+    if (strcmp(color, "green") == 0)
+        return 0.5;
+    if (strcmp(color, "blue") == 0)
+        return 0.25;
+    if (strcmp(color, "violet") == 0)
+        return 0.1;
+    if (strcmp(color, "gold") == 0)
+        return 5;
+    if (strcmp(color, "silver") == 0)
+        return 10;
+    return 20;
+}
+
 int main(int argc, char *argv[])
 {
 
     // Used to suffix the value if it exceeds 1K or 1M
     char suffix = '\0';
+    float tolerance = 20;
 
     // Check for correct amount of arguments
     if (argc < 3 || argc > 6)
     {
         printf("Invalid number of arguments. \n");
         printf("Usage: resicalc <color1> <color2> <multiplier> <tolerance> <temperature coefficient \n");
+        return 1;
     }
 
     int first = getColorValue(argv[1]);
@@ -63,6 +86,14 @@ int main(int argc, char *argv[])
     {
         printf("Invalid multiplier. \n");
         printf("Usage: resicalc <color1> <color2> <multiplier> <tolerance> <temperature coefficient \n");
+        return 1;
+    }
+
+    // Tolerance needs no check, even if a wrong argument is given
+    // It just defaults to 20 if not specified further
+    if (argc > 4)
+    {
+        tolerance = getTolerance(argv[4]);
     }
 
     // Apply multiplier and suffix
@@ -83,7 +114,7 @@ int main(int argc, char *argv[])
         suffix = 'M';
     }
 
-    printf("Resistance: %lld%c Ohm", resistance, suffix);
+    printf("Resistance: %lld%c Ohm +- %.1f \n", resistance, suffix, tolerance);
 
     return 0;
 }
